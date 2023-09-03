@@ -16,7 +16,6 @@ import (
 	"time"
 
 	"github.com/dgrr/http2"
-	"github.com/stretchr/testify/require"
 	"github.com/summerwind/h2spec/config"
 	"github.com/summerwind/h2spec/generic"
 	h2spec "github.com/summerwind/h2spec/http2"
@@ -216,7 +215,9 @@ func TestH2Spec(t *testing.T) {
 			}
 
 			tg.Test(conf)
-			require.Equal(t, 0, tg.FailedCount)
+			if tg.FailedCount != 0 {
+				t.FailNow()
+			}
 		})
 	}
 }
@@ -237,15 +238,21 @@ func launchLocalServer(t *testing.T) int {
 	http2.ConfigureServer(server, http2.ServerConfig{})
 
 	ln, err := net.Listen("tcp4", "127.0.0.1:0")
-	require.NoError(t, err)
+	if err != nil {
+		t.Fatalf("Unable to listen: %v", err)
+	}
 	go func() {
 		log.Println(server.ServeTLSEmbed(ln, certPEM, keyPEM))
 	}()
 
 	_, port, err := net.SplitHostPort(ln.Addr().String())
-	require.NoError(t, err)
+	if err != nil {
+		t.Fatalf("Invalid listen address: %v", err)
+	}
 	portInt, err := strconv.Atoi(port)
-	require.NoError(t, err)
+	if err != nil {
+		t.Fatalf("Invalid port: %v", err)
+	}
 
 	return portInt
 }
