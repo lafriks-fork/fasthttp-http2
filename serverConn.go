@@ -160,12 +160,22 @@ func (sc *serverConn) close() {
 	sc.maxRequestTimer.Stop()
 }
 
+func (sc *serverConn) writeFrame(fr *FrameHeader) {
+	defer func() {
+		if err := recover(); err != nil {
+			sc.logger.Printf("Serve panicked: %s:\n%s\n", err, debug.Stack())
+		}
+	}()
+
+	sc.writer <- fr
+}
+
 func (sc *serverConn) handlePing(ping *Ping) {
 	fr := AcquireFrameHeader()
 	ping.SetAck(true)
 	fr.SetBody(ping)
 
-	sc.writer <- fr
+	sc.writeFrame(fr)
 }
 
 func (sc *serverConn) writePing() {
@@ -176,7 +186,7 @@ func (sc *serverConn) writePing() {
 
 	fr.SetBody(ping)
 
-	sc.writer <- fr
+	sc.writeFrame(fr)
 }
 
 func (sc *serverConn) checkFrameWithStream(fr *FrameHeader) error {
@@ -519,7 +529,7 @@ func (sc *serverConn) writeReset(strm uint32, code ErrorCode) {
 
 	r.SetCode(code)
 
-	sc.writer <- fr
+	sc.writeFrame(fr)
 
 	if sc.debug {
 		sc.logger.Printf(
@@ -540,7 +550,7 @@ func (sc *serverConn) writeGoAway(strm uint32, code ErrorCode, message string) {
 
 	fr.SetBody(ga)
 
-	sc.writer <- fr
+	sc.writeFrame(fr)
 
 	if strm != 0 {
 		atomic.StoreUint32(&sc.closeRef, sc.lastID)
@@ -814,7 +824,7 @@ func (sc *serverConn) handleEndRequest(strm *Stream) {
 
 	fasthttpResponseHeaders(h, &sc.enc, &ctx.Response)
 
-	sc.writer <- fr
+	sc.writeFrame(fr)
 
 	if hasBody {
 		if ctx.Response.IsBodyStream() {
@@ -969,7 +979,7 @@ func (sc *serverConn) writeData(strm *Stream, body []byte) {
 
 		fr.SetBody(data)
 
-		sc.writer <- fr
+		sc.writeFrame(fr)
 	}
 }
 
@@ -1019,7 +1029,7 @@ func (sc *serverConn) handleSettings(st *Settings) {
 
 	fr.SetBody(stRes)
 
-	sc.writer <- fr
+	sc.writeFrame(fr)
 }
 
 func fasthttpResponseHeaders(dst *Headers, hp *HPACK, res *fasthttp.Response) {

@@ -54,6 +54,10 @@ type Ctx struct {
 
 // resolve will resolve the context, meaning that provided an error,
 func (ctx *Ctx) resolve(err error) {
+	defer func() {
+		_ = recover()
+	}()
+
 	select {
 	case ctx.Err <- err:
 	default:
@@ -109,7 +113,7 @@ func (cl *Client) createConn() (*Conn, *list.Element, error) {
 
 var ErrRequestCanceled = errors.New("request timed out")
 
-func (cl *Client) Do(req *fasthttp.Request, res *fasthttp.Response) (err error) {
+func (cl *Client) RoundTrip(hc *fasthttp.HostClient, req *fasthttp.Request, res *fasthttp.Response) (retry bool, err error) {
 	var c *Conn
 
 	cl.lck.Lock()
@@ -122,7 +126,7 @@ func (cl *Client) Do(req *fasthttp.Request, res *fasthttp.Response) (err error) 
 		} else {
 			c, e, err = cl.createConn()
 			if err != nil {
-				return err
+				return false, err
 			}
 		}
 
@@ -174,5 +178,5 @@ func (cl *Client) Do(req *fasthttp.Request, res *fasthttp.Response) (err error) 
 
 	close(ch)
 
-	return err
+	return false, err
 }
