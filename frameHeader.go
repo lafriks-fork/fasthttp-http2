@@ -6,7 +6,7 @@ import (
 	"io"
 	"sync"
 
-	"github.com/dgrr/http2/http2utils"
+	"github.com/lafriks/http2/http2utils"
 )
 
 const (

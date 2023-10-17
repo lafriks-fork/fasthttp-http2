@@ -10,7 +10,7 @@ package main
 // 	"net"
 // 	"net/http"
 
-// 	fasthttp2 "github.com/dgrr/http2"
+// 	fasthttp2 "github.com/lafriks/http2"
 // 	"github.com/valyala/fasthttp"
 // 	"golang.org/x/net/http2"
 // )

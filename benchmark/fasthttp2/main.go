@@ -6,8 +6,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/dgrr/http2"
-	"github.com/dgrr/http2/benchmark/common"
+	"github.com/lafriks/http2"
+	"github.com/lafriks/http2/benchmark/common"
 	"github.com/valyala/fasthttp"
 )
 

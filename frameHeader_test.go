@@ -6,7 +6,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/dgrr/http2/http2utils"
+	"github.com/lafriks/http2/http2utils"
 )
 
 const (
@@ -29,8 +29,8 @@ func TestFrameWrite(t *testing.T) {
 		t.Fatalf("unexpected size %d<>%d", n, nn)
 	}
 
-	var bf = bytes.NewBuffer(nil)
-	var bw = bufio.NewWriter(bf)
+	bf := bytes.NewBuffer(nil)
+	bw := bufio.NewWriter(bf)
 	fr.WriteTo(bw)
 	bw.Flush()
 

@@ -2,10 +2,12 @@
 
 http2 is an implementation of HTTP/2 protocol for [fasthttp](https://github.com/valyala/fasthttp).
 
+Fork from [github.com/dgrr/http2](https://github.com/dgrr/http2)
+
 ## Download
 
 ```bash
-go get github.com/dgrr/http2@v0.3.5
+go get github.com/lafriks/http2@v0.3.5
 ```
 
 ## Help
@@ -15,14 +17,14 @@ If you need any help to set up, contributing or understanding this repo, you can
 ## How to use the server?
 
 The server can only be used if your server supports TLS.
-Then, you can call [ConfigureServer](https://pkg.go.dev/github.com/dgrr/http2#ConfigureServer).
+Then, you can call [ConfigureServer](https://pkg.go.dev/github.com/lafriks/http2#ConfigureServer).
 
 ```go
 package main
 
 import (
 	"github.com/valyala/fasthttp"
-	"github.com/dgrr/http2"
+	"github.com/lafriks/http2"
 )
 
 func main() {
@@ -48,7 +50,7 @@ import (
         "fmt"
         "log"
 
-        "github.com/dgrr/http2"
+        "github.com/lafriks/http2"
         "github.com/valyala/fasthttp"
 )
 
@@ -72,10 +74,11 @@ func main() {
 
 ## Benchmarks
 
-Benchmark code [here](https://github.com/dgrr/http2/tree/master/benchmark).
+Benchmark code [here](https://github.com/lafriks/http2/tree/master/benchmark).
 
 ### fasthttp2
-```
+
+```console
 $  h2load --duration=10 -c10 -m1000 -t 4 https://localhost:8443
 [...]
 finished in 10.01s, 533808.90 req/s, 33.09MB/s
@@ -90,7 +93,8 @@ req/s           :   48976.50    59084.92    53359.02     3657.52    60.00%
 ```
 
 ### net/http2
-```
+
+```console
 $  h2load --duration=10 -c10 -m1000 -t 4 https://localhost:8443
 [...]
 finished in 10.01s, 124812.90 req/s, 5.00MB/s

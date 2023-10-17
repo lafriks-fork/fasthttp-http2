@@ -15,7 +15,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dgrr/http2"
+	"github.com/lafriks/http2"
 	"github.com/summerwind/h2spec/config"
 	"github.com/summerwind/h2spec/generic"
 	h2spec "github.com/summerwind/h2spec/http2"
